@@ -139,7 +139,7 @@ if(isset($_POST['fileUploader'])){
 			#check file support
 
 			if(!in_array($filetype, array_keys($allowedTypes))) {
-				echo'<div class="success-glass" style=" display:flex;align-items:center;justify-content:center;position:fixed;top:0;left:0;width:100%;height:100vh;background-color:rgba(0,0,0,0.9);z-index:2;"><div style="text-align:center"><img src="'.$SITEURL.'/plugins/uploaderExt/img/error.svg" style="filter:invert(100%);width:100px;display:block;margin:0 auto;margin-bottom:20px;"><h3 style="color:#fff;text-align:center;text-shadow:unset;">unsuported file</h3></div></div>';
+				echo'<div class="success-glass" style=" display:flex;align-items:center;justify-content:center;position:fixed;top:0;left:0;width:100%;height:100vh;background-color:rgba(0,0,0,0.9);z-index:2;"><div style="text-align:center"><h3 style="color:#fff;text-align:center;text-shadow:unset;">unsuported file</h3></div></div>';
 
 
 
