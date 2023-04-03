@@ -6,38 +6,37 @@
 
 <script>
 if(document.querySelector(".uploadform")){document.querySelector(".uploadform").outerHTML = `
-<div style="background:#182227;padding:10px;border-radius:5px;color:#fff;">
-	<h3 style="color:#fff;text-shadow:0 0 0;">Upload File</h3>
+<div style="background:#182227; padding:10px; border-radius:5px; color:#fff;">
+	<h3 style="color:#fff; text-shadow:0 0 0;"><?php echo i18n_r('FILE_UPLOAD');?></h3>
 
-	<form action="upload.php?path=<?php echo $path ;?>"   method="POST" enctype="multipart/form-data">
-	<div style="background:rgba(0,0,0,0.4);padding:10px;box-sizing:border-box;border:solid 1px #ddd;border-radius:5px;">
-		<input type="file"   name="filer[]" multiple style="width:100%;text-overflow: ellipsis;"> 
+	<form action="upload.php?path=<?php echo $path ;?>" method="POST" enctype="multipart/form-data">
+	<div style="background:rgba(0,0,0,0.4); padding:10px; box-sizing:border-box; border:solid 1px #ddd; border-radius:5px;">
+		<input type="file" name="filer[]" multiple style="width:100%; text-overflow:ellipsis;"> 
 	</div>
 
 <?php if(@$jsonSettings[0]['resolutionOn']!== 'true'):?>
 
-    <div class="compress" style="background: rgba(0,0,0,0.4);width:100%;padding:10px;border:solid 1px #fff;margin:10px 0;color:#fff;box-sizing:border-box;border-radius:5px;">
+    <div class="compress" style="background: rgba(0,0,0,0.4); width:100%; padding:10px; border:solid 1px #fff; margin:10px 0; color:#fff; box-sizing:border-box; border-radius:5px;">
    
-		<label for="compress" style="color:#fff" style="margin-bottom:10px;margin-top:5px;sfont-size:11px;">Compress photo? </label>
+		<label for="compress" style="color:#fff; margin-bottom:10px; margin-top:5px; sfont-size:11px;"><?php echo i18n_r('uploaderExt/lang_Resize_Image');?></label>
 		<input type="checkbox" name="compress">
 		
-		<input type="text" placeholder="width in pixel (without px)"  style="width:100%;display:block;margin:10px 0;padding:5px;box-sizing:border-box;" name="compressvalue">
+		<input type="text" placeholder="<?php echo i18n_r('uploaderExt/lang_Width_In_Pixels');?>" style="width:100%; display:block; margin:10px 0; padding:5px; box-sizing:border-box;" name="compressvalue">
     </div>
 
 <?php else :?>
 
-    <div class="compress"  style="background: rgba(0,0,0,0.4);width:100%;padding:10px;border:solid 1px #fff;margin:10px 0;color:#fff;box-sizing:border-box;border-radius:5px;display:none;">
+    <div class="compress" style="background: rgba(0,0,0,0.4); width:100%; padding:10px; border:solid 1px #fff; margin:10px 0; color:#fff; box-sizing:border-box; border-radius:5px; display:none;">
    
-		<label for="compress" style="color:#fff" style="margin-bottom:10px;margin-top:5px;sfont-size:11px;">Compress photo? </label>
+		<label for="compress" style="color:#fff; margin-bottom:10px; margin-top:5px; sfont-size:11px;"><?php echo i18n_r('uploaderExt/lang_Resize_Image');?> </label>
 		<input type="checkbox" name="compress" checked>
 		
-		<input type="text" placeholder="width in pixel (without px)"  style="width:100%;display:block;margin:10px 0;padding:5px;box-sizing:border-box;" value="<?php echo @$jsonSettings[0]['resolutionWidth'];?>" name="compressvalue">
+		<input type="text" placeholder="<?php echo i18n_r('uploaderExt/lang_Width_In_Pixels');?>" style="width:100%; display:block; margin:10px 0; padding:5px; box-sizing:border-box;" value="<?php echo @$jsonSettings[0]['resolutionWidth'];?>" name="compressvalue">
     </div>
 
 <?php endif;?>
      
-     <input type="submit" style="width:100%;
-     height:40px; border:none;color:#fff;border-radius:5px; border:none;background:#CF3805;margin-top:10px;" value="<?php i18n('UPLOAD'); ?>" name="fileUploader"></form></div>`;}
+     <input type="submit" style="width:100%; height:40px; border:none;color:#fff;border-radius:5px; border:none; background:#CF3805; margin-top:10px;" value="<?php i18n('UPLOAD'); ?>" name="fileUploader"></form></div>`;}
 </script>
  
 <script>
@@ -57,7 +56,7 @@ if(document.querySelector(".uploadform")){document.querySelector(".uploadform").
 		}
 	});
 </script>
- 
+
 <?php
  
 $ds   = DIRECTORY_SEPARATOR;
@@ -139,13 +138,9 @@ if(isset($_POST['fileUploader'])){
 			#check file support
 
 			if(!in_array($filetype, array_keys($allowedTypes))) {
-				echo'<div class="success-glass" style=" display:flex;align-items:center;justify-content:center;position:fixed;top:0;left:0;width:100%;height:100vh;background-color:rgba(0,0,0,0.9);z-index:2;"><div style="text-align:center"><img src="'.$SITEURL.'/plugins/uploaderExt/img/error.svg" style="filter:invert(100%);width:100px;display:block;margin:0 auto;margin-bottom:20px;"><h3 style="color:#fff;text-align:center;text-shadow:unset;">unsuported file</h3></div></div>';
+				echo'<div class="success-glass" style="display:flex; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100vh; background-color:rgba(0,0,0,0.9); z-index:2;"><div style="text-align:center"><img src="'.$SITEURL.'/plugins/uploaderExt/img/error.svg" style="width:16px; vertical-align:middle;"> <h3 style="color:#fff; text-align:center; text-shadow:unset;">'. i18n_r('uploaderExt/lang_Unsupported_File') .'</h3></div></div>';
 
-
-
-				echo("<meta http-equiv='refresh' content='1'>");
-
-
+				echo("<meta http-equiv='refresh' content='3'>");
 
 				die();
 			}
@@ -211,11 +206,11 @@ if(isset($_POST['fileUploader'])){
 
 	};
 
-echo '<div class="updated" style="display: block !important;"><p>'.i18n_r('FILE_SUCCESS_MSG').'</p></div>';
+	echo '<div class="updated" style="display: block !important;"><p><img src="'.$SITEURL.'/plugins/uploaderExt/img/success.svg" style="width:16px; vertical-align:middle;"> '.i18n_r('FILE_SUCCESS_MSG').'</p></div>';
 
-echo '<script>document.querySelector(".bodycontent").prepend(document.querySelector(".updated"))</script>';
+	echo '<script>document.querySelector(".bodycontent").prepend(document.querySelector(".updated"))</script>';
 
-	echo("<meta http-equiv='refresh' content='1'>");
+	echo("<meta http-equiv='refresh' content='3'>");
 
 }
  
