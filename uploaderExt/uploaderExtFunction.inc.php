@@ -1,79 +1,115 @@
-<?php 
-	$path = (isset($_GET['path'])) ? $_GET['path'] : "";
-	 
-	global $SITEURL;
-;?>
+<?php
+$path = (isset($_GET['path'])) ? $_GET['path'] : "";
+
+global $SITEURL;; ?>
 
 <script>
-if(document.querySelector(".uploadform")){document.querySelector(".uploadform").outerHTML = `
+	if (document.querySelector(".uploadform")) {
+		document.querySelector(".uploadform").outerHTML = `
 <div style="background:#182227; padding:10px; border-radius:5px; color:#fff;">
-	<h3 style="color:#fff; text-shadow:0 0 0;"><?php echo i18n_r('FILE_UPLOAD');?></h3>
+	<h3 style="color:#fff; text-shadow:0 0 0;"><?php echo i18n_r('FILE_UPLOAD'); ?></h3>
 
-	<form action="upload.php?path=<?php echo $path ;?>" method="POST" enctype="multipart/form-data">
+	<form action="upload.php?path=<?php echo $path; ?>" method="POST" enctype="multipart/form-data">
 	<div style="background:rgba(0,0,0,0.4); padding:10px; box-sizing:border-box; border:solid 1px #ddd; border-radius:5px;">
 		<input type="file" name="filer[]" multiple style="width:100%; text-overflow:ellipsis;"> 
 	</div>
 
-<?php if(@$jsonSettings[0]['resolutionOn']!== 'true'):?>
+<?php if (@$jsonSettings[0]['resolutionOn'] !== 'true' && @$jsonSettings[0]['webp'] !== 'true') : ?>
 
     <div class="compress" style="background: rgba(0,0,0,0.4); width:100%; padding:10px; border:solid 1px #fff; margin:10px 0; color:#fff; box-sizing:border-box; border-radius:5px;">
    
-		<label for="compress" style="color:#fff; margin-bottom:10px; margin-top:5px; sfont-size:11px;"><?php echo i18n_r('uploaderExt/LANG_Resize_Image');?></label>
+		<label for="compress" style="color:#fff; margin-bottom:10px; margin-top:5px; font-size:12px;"><?php echo i18n_r('uploaderExt/LANG_Resize_Image'); ?></label>
 		<input type="checkbox" name="compress">
 		
-		<input type="text" placeholder="<?php echo i18n_r('uploaderExt/LANG_Width_In_Pixels');?>" style="width:100%; display:block; margin:10px 0; padding:5px; box-sizing:border-box;" name="compressvalue">
+		<input type="text" placeholder="<?php echo i18n_r('uploaderExt/LANG_Width_In_Pixels'); ?>" style="width:100%; display:block; margin:10px 0; padding:5px; box-sizing:border-box;" name="compressvalue">
+
+
     </div>
 
-<?php else :?>
+	<div class="webp" style="background: rgba(0,0,0,0.4); width:100%; padding:10px; border:solid 1px #fff; margin:10px 0; color:#fff; box-sizing:border-box; border-radius:5px;">
+
+	
+	<label>
+		<input type="checkbox" name="webp" value="yes"> <span style="color:#fff; margin-bottom:10px; margin-top:5px; font-size:12px;">Webp Convert?</span>
+		</label>
+
+	</div>
+
+
+
+<?php else : ?>
 
     <div class="compress" style="background: rgba(0,0,0,0.4); width:100%; padding:10px; border:solid 1px #fff; margin:10px 0; color:#fff; box-sizing:border-box; border-radius:5px; display:none;">
    
-		<label for="compress" style="color:#fff; margin-bottom:10px; margin-top:5px; sfont-size:11px;"><?php echo i18n_r('uploaderExt/LANG_Resize_Image');?> </label>
+		 
+			<label for="compress" style="color:#fff; margin-bottom:10px; margin-top:5px; sfont-size:11px;"><?php echo i18n_r('uploaderExt/LANG_Resize_Image'); ?> </label>
 		<input type="checkbox" name="compress" checked>
 		
-		<input type="text" placeholder="<?php echo i18n_r('uploaderExt/LANG_Width_In_Pixels');?>" style="width:100%; display:block; margin:10px 0; padding:5px; box-sizing:border-box;" value="<?php echo @$jsonSettings[0]['resolutionWidth'];?>" name="compressvalue">
-    </div>
+		<input type="text" placeholder="<?php echo i18n_r('uploaderExt/LANG_Width_In_Pixels'); ?>" style="width:100%; display:block; margin:10px 0; padding:5px; box-sizing:border-box;" value="<?php echo @$jsonSettings[0]['resolutionWidth']; ?>" name="compressvalue">
 
-<?php endif;?>
-     
-     <input type="submit" style="width:100%; height:40px; border:none;color:#fff;border-radius:5px; border:none; background:#CF3805; margin-top:10px;" value="<?php i18n('UPLOAD'); ?>" name="fileUploader"></form></div>`;}
-</script>
+	 </div>
+
+		<?php if (@$jsonSettings[0]['webp'] == 'true') : ?>
+		<div class="webp" style="background: rgba(0,0,0,0.4); width:100%; padding:10px; border:solid 1px #fff; margin:10px 0; color:#fff; box-sizing:border-box; border-radius:5px;">
+		<label>
+		<input type="checkbox" checked name="webp" value="yes"> <span style="color:#fff; margin-bottom:10px; margin-top:5px; font-size:12px;">Webp Convert?</span>
+		</label>
+		</div>
+		<?php endif; ?>
+
  
-<script>
-	document.querySelector('input[name="compress"]').addEventListener('click',function(){
-		if(this.checked == true){
-			document.querySelector('.webp').style.display="none";
-		}else{
-			document.querySelector('.webp').style.display="block";
-		}
-	});
 
-	document.querySelector('input[name="webp"').addEventListener('click',function(){
-		if(this.checked == true){
-			document.querySelector('.compress').style.display="none";
-		}else{
-			document.querySelector('.compress').style.display="block";
+<?php endif; ?>
+
+ 
+     <input type="submit" style="width:100%; height:40px; border:none;color:#fff;border-radius:5px; border:none; background:#CF3805; margin-top:10px;" value="<?php i18n('UPLOAD'); ?>" name="fileUploader"></form></div>`;
+	}
+</script>
+
+<script>
+	if (document.querySelector('input[name="compress"]') !== null) {
+
+		document.querySelector('input[name="compress"]').addEventListener('click', function() {
+			if (this.checked == true) {
+				document.querySelector('.webp').style.display = "none";
+			} else {
+				document.querySelector('.webp').style.display = "block";
+				document.querySelector('.webp input[type="checkbox"]').checked = true;
+
+			}
+		});
+
+		if (document.querySelector('input[name="webp"]') !== null) {
+			document.querySelector('input[name="webp"').addEventListener('click', function() {
+				if (this.checked == true) {
+					document.querySelector('.compress').style.display = "none";
+					document.querySelector('.compress input[type="checkbox"]').checked = false;
+				} else {
+					document.querySelector('.compress').style.display = "block";
+				}
+			});
 		}
-	});
+
+	}
 </script>
 
 <?php
- 
+
 $ds   = DIRECTORY_SEPARATOR;
 $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 
-$storeFolder = '../data/uploads/'.$path;   
+$storeFolder = '../data/uploads/' . $path;
 
-if(isset($_POST['fileUploader'])){
+if (isset($_POST['fileUploader'])) {
 
 	if (!empty($_FILES)) {
 
 		$ds   = DIRECTORY_SEPARATOR;
 		$path = (isset($_GET['path'])) ? $_GET['path'] : "";
-		$storeFolder = '../data/uploads/'.$path.'/';   
+		$storeFolder = '../data/uploads/' . $path . '/';
 		$count = 0;
 
-		foreach($_FILES['filer']['tmp_name'] as $key => $tmp_name){
+		foreach ($_FILES['filer']['tmp_name'] as $key => $tmp_name) {
 
 			$tempFile = $_FILES['filer']['tmp_name'][$count];
 			$basename = basename($_FILES['filer']['name'][$count]);
@@ -137,17 +173,17 @@ if(isset($_POST['fileUploader'])){
 
 			#check file support
 
-			if(!in_array($filetype, array_keys($allowedTypes))) {
-				echo'<div class="success-glass" style="display:flex; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100vh; background-color:rgba(0,0,0,0.9); z-index:2;"><div style="text-align:center"><img src="'.$SITEURL.'/plugins/uploaderExt/img/error.svg" style="width:16px; vertical-align:middle;"> <h3 style="color:#fff; text-align:center; text-shadow:unset;">'. i18n_r('uploaderExt/LANG_Unsupported_File') .'</h3></div></div>';
+			if (!in_array($filetype, array_keys($allowedTypes))) {
+				echo '<div class="success-glass" style="display:flex; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100vh; background-color:rgba(0,0,0,0.9); z-index:2;"><div style="text-align:center"><img src="' . $SITEURL . '/plugins/uploaderExt/img/error.svg" style="width:16px; vertical-align:middle;"> <h3 style="color:#fff; text-align:center; text-shadow:unset;">' . i18n_r('uploaderExt/LANG_Unsupported_File') . '</h3></div></div>';
 
-				echo("<meta http-equiv='refresh' content='3'>");
+				echo ("<meta http-equiv='refresh' content='3'>");
 
 				die();
 			}
 
 			## $targetPath = dirname( __FILE__ ) . $ds. $storeFolder . $ds; 
 			$targetPath = $storeFolder;
-			$targetFile =  $targetPath.$_FILES['filer']['name'][$count];  
+			$targetFile =  $targetPath . $_FILES['filer']['name'][$count];
 
 			##check space 
 			$targetNameWithoutSpace = pathinfo($_FILES['filer']['name'][$count])['filename'];
@@ -155,39 +191,39 @@ if(isset($_POST['fileUploader'])){
 			$targetNameWithoutSpace  = str_replace(' ', '-', $targetNameWithoutSpace);
 			$targetNameWithoutSpace  = preg_replace('/[^0-9a-z\-]+/', '', $targetNameWithoutSpace);
 			$targetNameWithoutSpace  = preg_replace('/[\-]+/', '-', $targetNameWithoutSpace);
-			$targetNameWithoutSpace = trim($targetNameWithoutSpace,'-');
+			$targetNameWithoutSpace = trim($targetNameWithoutSpace, '-');
 
-			$name = pathinfo($targetNameWithoutSpace,PATHINFO_FILENAME);
-			$targetFile = $targetPath.$name.'.'.$extension;
+			$name = pathinfo($targetNameWithoutSpace, PATHINFO_FILENAME);
+			$targetFile = $targetPath . $name . '.' . $extension;
 
 			#check file exist 
-			if(file_exists($targetFile)){ 
-			   $name = pathinfo($targetNameWithoutSpace,PATHINFO_FILENAME);
-				$targetFile = $targetPath.$name.'-'.rand(1,4000).'.'.$extension;
+			if (file_exists($targetFile)) {
+				$name = pathinfo($targetNameWithoutSpace, PATHINFO_FILENAME);
+				$targetFile = $targetPath . $name . '-' . rand(1, 4000) . '.' . $extension;
 			}
 
 			#upload files
-			move_uploaded_file($tempFile,$targetFile); 
+			move_uploaded_file($tempFile, $targetFile);
 
 			#if compress used
-			if(isset($_POST['compress'])){
+			if (isset($_POST['compress'])) {
 				$compressUser = $_POST['compressvalue'];
 				$original = $targetFile;
 				$original_dimensions = getimagesize($original);
 				$width = $original_dimensions[0];
 				$height = $original_dimensions[1];
-				$aspect = $width/$compressUser;
+				$aspect = $width / $compressUser;
 				$new_width = $compressUser;
-				$new_height = $height/$aspect;
+				$new_height = $height / $aspect;
 				$small = imagecreatetruecolor($new_width, $new_height);
 
-				if(exif_imagetype($targetFile) == IMAGETYPE_JPEG){
+				if (exif_imagetype($targetFile) == IMAGETYPE_JPEG) {
 					$source = imagecreatefromjpeg($original);
 					imagecopyresampled($small, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 					imagejpeg($small, $targetFile);
 				};
 
-				if(exif_imagetype($targetFile) == IMAGETYPE_PNG){
+				if (exif_imagetype($targetFile) == IMAGETYPE_PNG) {
 					imagealphablending($small, false);
 					imagesavealpha($small, true);
 					$transparent = imagecolorallocatealpha($small, 255, 255, 255, 127);
@@ -199,26 +235,65 @@ if(isset($_POST['fileUploader'])){
 					imagecopyresampled($small, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 					imagepng($small, $targetFile);
 				};
-				 
-				if(exif_imagetype($targetFile) == IMAGETYPE_GIF){
+
+				if (exif_imagetype($targetFile) == IMAGETYPE_GIF) {
 					$source = imagecreatefromgif($original);
 					imagecopyresampled($small, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 					imagegif($small, $targetFile);
 				};
 			};
-				
-			$count=$count + 1; 
-							
-		};
 
+
+
+
+
+
+			if (isset($_POST['webp'])) {
+
+
+
+				if (exif_imagetype($targetFile) == IMAGETYPE_JPEG) {
+					$source = imagecreatefromjpeg($targetFile);
+					imagepalettetotruecolor($source);
+					imagealphablending($source, true);
+					imagesavealpha($source, true);
+					imagewebp($source, $targetPath . $name . '.webp', 80);
+					imagedestroy($source);
+					unlink($targetFile);
+				};
+
+				if (exif_imagetype($targetFile) == IMAGETYPE_PNG) {
+					$source = imagecreatefrompng($targetFile);
+					imagepalettetotruecolor($source);
+					imagealphablending($source, true);
+					imagesavealpha($source, true);
+					imagewebp($source, $targetPath . $name . '.webp', 80);
+					imagedestroy($source);
+					unlink($targetFile);
+				};
+
+				if (exif_imagetype($targetFile) == IMAGETYPE_GIF) {
+					$source = imagecreatefromgif($targetFile);
+					imagepalettetotruecolor($source);
+					imagealphablending($source, true);
+					imagesavealpha($source, true);
+					imagewebp($source, $targetPath . $name . '.webp', 80);
+					imagedestroy($source);
+					unlink($targetFile);
+				};
+			}
+
+
+
+			$count = $count + 1;
+		};
 	};
 
-	echo '<div class="updated" style="display: block !important; grid-column:1/3"><p><img src="'.$SITEURL.'/plugins/uploaderExt/img/success.svg" style="width:16px; vertical-align:middle;"> '.i18n_r('FILE_SUCCESS_MSG').'</p></div>';
+	echo '<div class="updated" style="display: block !important; grid-column:1/3"><p><img src="' . $SITEURL . '/plugins/uploaderExt/img/success.svg" style="width:16px; vertical-align:middle;"> ' . i18n_r('FILE_SUCCESS_MSG') . '</p></div>';
 
 	echo '<script>document.querySelector(".bodycontent").prepend(document.querySelector(".updated"))</script>';
 
-	echo("<meta http-equiv='refresh' content='3'>");
-
+	echo ("<meta http-equiv='refresh' content='3'>");
 }
- 
+
 ?>
