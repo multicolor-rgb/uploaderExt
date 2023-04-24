@@ -2,8 +2,6 @@
 
 <form method="post" action="#">
 
-<p style="color:red;"><?php echo i18n_r('uploaderExt/LANG_EXP');?></p>
-
 
 	<div class="compress">
 
@@ -39,50 +37,7 @@
 </div>
 
 
-<script>
-	document.querySelector('input[name="resolution"]').addEventListener('click', () => {
-
-		if (document.querySelector('input[name="resolution"]').checked) {
-			document.querySelector('.webp').style.display = "none";
-			document.querySelector('input[name="webp"]').checked = false;
-		} else {
-			document.querySelector('.webp').style.display = "block";
-		}
-
-	})
-
-	document.querySelector('input[name="webp"]').addEventListener('click', () => {
-
-		if (document.querySelector('input[name="webp"]').checked) {
-			document.querySelector('.compress').style.display = "none";
-			document.querySelector('input[name="resolution"]').checked = false;
-
-		} else {
-			document.querySelector('.compress').style.display = "block";
-		}
-
-	});
-
-	//check
-
-
-	if (document.querySelector('input[name="resolution"]').checked) {
-		document.querySelector('.webp').style.display = "none";
-		document.querySelector('input[name="webp"]').checked = false;
-	} else {
-		document.querySelector('.webp').style.display = "block";
-	}
-
-
-	if (document.querySelector('input[name="webp"]').checked) {
-		document.querySelector('.compress').style.display = "none";
-		document.querySelector('input[name="resolution"]').checked = false;
-
-	} else {
-		document.querySelector('.compress').style.display = "block";
-	}
-</script>
-
+ 
 
 <?php
 if (isset($_POST['saveSettingsEXT'])) {
@@ -91,12 +46,18 @@ if (isset($_POST['saveSettingsEXT'])) {
 	$resolutionWidth = $_POST['resolutionwidth'] ?? '';
 	$webP = $_POST['webp'] ?? '';
 
+	$folderUploader = GSDATAOTHERPATH.'UploaderExt/';
+
+	if(!file_exists($folderUploader)){
+		mkdir($folderUploader,0755);
+		file_put_contents($folderUploader.'.htaccess','Deny from all');
+	};
+
 	$settings = [];
 	array_push($settings, array('resolutionOn' => $resolutionOn, 'resolutionWidth' => $resolutionWidth, 'webp' => $webP));
 
 	$js = json_encode($settings, true);
 
-	file_put_contents(GSPLUGINPATH . 'uploaderExt/settings.json', $js);
-
-	echo ("<meta http-equiv='refresh' content='0'>");
+	file_put_contents($folderUploader.'settings.json', $js);
+ 	echo ("<meta http-equiv='refresh' content='0'>");
 }; ?>

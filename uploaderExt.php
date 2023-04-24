@@ -10,7 +10,7 @@ i18n_merge('uploaderExt') || i18n_merge('uploaderExt', 'en_US');
 register_plugin(
 	$thisfile, //Plugin id
 	'UploaderExt', 	//Plugin name
-	'3.0', 		//Plugin version
+	'3.1', 		//Plugin version
 	'Multicolor',  //Plugin author
 	'https://discord.gg/vkySHPxpg2', //author website
 	i18n_r('uploaderExt/LANG_Description'), //Plugin description
@@ -20,7 +20,7 @@ register_plugin(
 
 add_action('footer', 'uploaderExt');
 
-$jsonSettings = json_decode(@file_get_contents(GSPLUGINPATH . 'uploaderExt/settings.json'), true);
+$jsonSettings = json_decode(@file_get_contents(GSDATAOTHERPATH . 'UploaderExt/settings.json'), true);
 
 function uploaderExt()
 {

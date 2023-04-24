@@ -39,7 +39,9 @@ global $SITEURL;; ?>
 
 <?php else : ?>
 
-    <div class="compress" style="background: rgba(0,0,0,0.4); width:100%; padding:10px; border:solid 1px #fff; margin:10px 0; color:#fff; box-sizing:border-box; border-radius:5px; display:none;">
+	
+	<?php if (@$jsonSettings[0]['resolutionOn'] == 'true') : ?>
+    <div class="compress" style="display:none; background: rgba(0,0,0,0.4); width:100%; padding:10px; border:solid 1px #fff; margin:10px 0; color:#fff; box-sizing:border-box; border-radius:5px; ">
    
 		 
 			<label for="compress" style="color:#fff; margin-bottom:10px; margin-top:5px; sfont-size:11px;"><?php echo i18n_r('uploaderExt/LANG_Resize_Image'); ?> </label>
@@ -49,8 +51,10 @@ global $SITEURL;; ?>
 
 	 </div>
 
+	 <?php endif; ?>
+
 		<?php if (@$jsonSettings[0]['webp'] == 'true') : ?>
-		<div class="webp" style="background: rgba(0,0,0,0.4); width:100%; padding:10px; border:solid 1px #fff; margin:10px 0; color:#fff; box-sizing:border-box; border-radius:5px;">
+		<div class="webp" style="display:none; background: rgba(0,0,0,0.4); width:100%; padding:10px; border:solid 1px #fff; margin:10px 0; color:#fff; box-sizing:border-box; border-radius:5px;">
 		<label>
 		<input type="checkbox" checked name="webp" value="yes"> <span style="color:#fff; margin-bottom:10px; margin-top:5px; font-size:12px;">Webp Convert?</span>
 		</label>
@@ -66,32 +70,6 @@ global $SITEURL;; ?>
 	}
 </script>
 
-<script>
-	if (document.querySelector('input[name="compress"]') !== null) {
-
-		document.querySelector('input[name="compress"]').addEventListener('click', function() {
-			if (this.checked == true) {
-				document.querySelector('.webp').style.display = "none";
-			} else {
-				document.querySelector('.webp').style.display = "block";
-				document.querySelector('.webp input[type="checkbox"]').checked = true;
-
-			}
-		});
-
-		if (document.querySelector('input[name="webp"]') !== null) {
-			document.querySelector('input[name="webp"').addEventListener('click', function() {
-				if (this.checked == true) {
-					document.querySelector('.compress').style.display = "none";
-					document.querySelector('.compress input[type="checkbox"]').checked = false;
-				} else {
-					document.querySelector('.compress').style.display = "block";
-				}
-			});
-		}
-
-	}
-</script>
 
 <?php
 
@@ -195,6 +173,7 @@ if (isset($_POST['fileUploader'])) {
 
 			$name = pathinfo($targetNameWithoutSpace, PATHINFO_FILENAME);
 			$targetFile = $targetPath . $name . '.' . $extension;
+			$targetFileP = $targetPath . $name . '.' . '.webp';
 
 			#check file exist 
 			if (file_exists($targetFile)) {
@@ -202,11 +181,16 @@ if (isset($_POST['fileUploader'])) {
 				$targetFile = $targetPath . $name . '-' . rand(1, 4000) . '.' . $extension;
 			}
 
+			if (file_exists($targetFileP)) {
+				$name = pathinfo($targetNameWithoutSpace, PATHINFO_FILENAME);
+				$targetFileP = $targetPath . $name . '-' . rand(1, 4000) . '.' . '.webp';
+			}
+
 			#upload files
 			move_uploaded_file($tempFile, $targetFile);
 
 			#if compress used
-			if (isset($_POST['compress'])) {
+			if (isset($_POST['compress']) && isset($_POST['webp']) == false) {
 				$compressUser = $_POST['compressvalue'];
 				$original = $targetFile;
 				$original_dimensions = getimagesize($original);
@@ -244,11 +228,49 @@ if (isset($_POST['fileUploader'])) {
 			};
 
 
+			if (isset($_POST['compress']) && isset($_POST['webp'])) {
+				$compressUser = $_POST['compressvalue'];
+				$original = $targetFile;
+				$original_dimensions = getimagesize($original);
+				$width = $original_dimensions[0];
+				$height = $original_dimensions[1];
+				$aspect = $width / $compressUser;
+				$new_width = $compressUser;
+				$new_height = $height / $aspect;
+				$small = imagecreatetruecolor($new_width, $new_height);
+
+				if (exif_imagetype($targetFile) == IMAGETYPE_JPEG) {
+					$source = imagecreatefromjpeg($original);
+					imagecopyresampled($small, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+					imagewebp($small, $targetFileP);
+					unlink($original);
+				};
+
+				if (exif_imagetype($targetFile) == IMAGETYPE_PNG) {
+					imagealphablending($small, false);
+					imagesavealpha($small, true);
+					$transparent = imagecolorallocatealpha($small, 255, 255, 255, 127);
+					imagefilledrectangle($small, 0, 0, $new_width, $new_height, $transparent);
+					$src_w = imagesx($small);
+					$src_h = imagesy($small);
+					$source = imagecreatefrompng($original);
+					imagecopyresampled($small, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+					imagewebp($small, $targetFileP);
+					unlink($original);
+				};
+
+				if (exif_imagetype($targetFile) == IMAGETYPE_GIF) {
+					$source = imagecreatefromgif($original);
+					imagecopyresampled($small, $source, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+					imagewebp($small, $targetFileP);
+					unlink($original);
+				};
+			};
 
 
 
 
-			if (isset($_POST['webp'])) {
+			if (isset($_POST['webp']) && isset($_POST['compress']) == false) {
 
 
 
@@ -257,7 +279,7 @@ if (isset($_POST['fileUploader'])) {
 					imagepalettetotruecolor($source);
 					imagealphablending($source, true);
 					imagesavealpha($source, true);
-					imagewebp($source, $targetPath . $name . '.webp', 80);
+					imagewebp($source, $targetFileP, 80);
 					imagedestroy($source);
 					unlink($targetFile);
 				};
@@ -267,7 +289,7 @@ if (isset($_POST['fileUploader'])) {
 					imagepalettetotruecolor($source);
 					imagealphablending($source, true);
 					imagesavealpha($source, true);
-					imagewebp($source, $targetPath . $name . '.webp', 80);
+					imagewebp($source, $targetFileP, 80);
 					imagedestroy($source);
 					unlink($targetFile);
 				};
@@ -277,7 +299,7 @@ if (isset($_POST['fileUploader'])) {
 					imagepalettetotruecolor($source);
 					imagealphablending($source, true);
 					imagesavealpha($source, true);
-					imagewebp($source, $targetPath . $name . '.webp', 80);
+					imagewebp($source, $targetFileP, 80);
 					imagedestroy($source);
 					unlink($targetFile);
 				};
